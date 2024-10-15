@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Register - Active Club Zone</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Active Club Zone Logo">
+        </div>
+    </header>
+
+    <!-- Registration Form -->
+    <section class="register-form">
+        <div class="form-container">
+            <h2>Create Your Account</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">First Name</label>
+                    <input type="text" id="register-name" name="register-name" placeholder="Enter your first name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-surname">Last Name</label>
+                    <input type="text" id="register-surname" name="register-surname" placeholder="Enter your last name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" name="register-email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="register-password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-type">Choose Your Role</label>
+                    <select id="user-type" name="user-type" required>
+                        <option value="player">Player</option>
+                        <option value="manager">Manager</option>
+                        <option value="manager-player">Manager-Player</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Register</button>
+            </form>
+
+            <!-- Loader -->
+            <div class="loader" id="loader" style="display: none;"></div>
+
+            <!-- Success/Error Message -->
+            <p class="success-error-message" id="success-error-message"></p>
+
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Active Club Zone. All rights reserved.</p>
+    </footer>
+
+    <script src="register.js"></script>
+
+</body>
+</html>
