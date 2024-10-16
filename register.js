@@ -25,26 +25,21 @@ document.getElementById('register-form').addEventListener('submit', async functi
       body: JSON.stringify(formData)
     });
 
-    const result = await response.json();
-    
-    // Hide loader
-    loader.style.display = 'none';
+const result = await response.json();
+console.log(result);  // Logiraj cijeli odgovor za dijagnostiku
 
-    if (result.status === 'success') {
-      message.textContent = 'Registration successful! Redirecting to activation page...';
-      message.style.color = 'green';
+loader.style.display = 'none';
 
-      // Redirect to activation page after a short delay
-      setTimeout(() => {
-        window.location.href = '/activation';
-      }, 2000);
-    } else {
-      message.textContent = 'Registration failed: ' + result.message;
-      message.style.color = 'red';
-    }
-  } catch (error) {
-    loader.style.display = 'none';
-    message.textContent = 'An error occurred: ' + error.message;
-    message.style.color = 'red';
-  }
+if (result.status === 'success') {
+  message.textContent = 'Registration successful! Redirecting to activation page...';
+  message.style.color = 'green';
+
+  setTimeout(() => {
+    window.location.href = '/activation';
+  }, 2000);
+} else {
+  message.textContent = 'Registration failed: ' + (result.message || 'Unknown error occurred');
+  message.style.color = 'red';
+}
+
 });
