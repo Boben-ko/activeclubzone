@@ -25,8 +25,10 @@ document.getElementById('register-form').addEventListener('submit', async functi
       body: JSON.stringify(formData)
     });
 
+    // Parse response as JSON
     const result = await response.json();
-    
+    console.log(result);  // Log the result for debugging
+
     // Hide loader
     loader.style.display = 'none';
 
@@ -39,11 +41,18 @@ document.getElementById('register-form').addEventListener('submit', async functi
         window.location.href = '/activation';
       }, 2000);
     } else {
-      message.textContent = 'Registration failed: ' + result.message;
+      // Handle failure with error message from the server
+      message.textContent = 'Registration failed: ' + (result.message || 'Unknown error occurred');
       message.style.color = 'red';
     }
   } catch (error) {
+    // Hide loader in case of error
     loader.style.display = 'none';
+    
+    // Log error message for debugging
+    console.error('Error occurred:', error);
+    
+    // Display error to the user
     message.textContent = 'An error occurred: ' + error.message;
     message.style.color = 'red';
   }
