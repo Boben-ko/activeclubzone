@@ -24,9 +24,12 @@
             <input type="text" id="activation-code" placeholder="Enter Activation Code" required>
         </div>
         <button type="submit">Activate</button>
-        <div class="loader" id="loader"></div>
-        <p class="error-message" id="error-message"></p>
-        <p class="success-message" id="success-message"></p>
+        
+        <!-- Loader -->
+        <div class="loader" id="loader" style="display: none;"></div>
+        
+        <!-- Success/Error Message -->
+        <p class="success-error-message" id="success-error-message"></p>
     </form>
     <div id="notification"></div>
 
@@ -41,3 +44,14 @@
     <p id="activation-success-message"></p>
     <button id="proceed-to-login">Proceed to Login</button>
 </div>
+                
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Active Club Zone. All rights reserved.</p>
+    </footer>
+
+    <script src="register.js"></script>
+
+</body>
+</html>
