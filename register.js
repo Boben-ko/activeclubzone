@@ -11,7 +11,7 @@ document.getElementById('register-form').addEventListener('submit', async functi
   message.textContent = '';
 
   const formData = {
-    action: 'register',  // Registration action
+    action: 'register',
     name: document.getElementById('register-name').value,
     surname: document.getElementById('register-surname').value,
     email: document.getElementById('register-email').value,
@@ -22,8 +22,17 @@ document.getElementById('register-form').addEventListener('submit', async functi
   try {
     const response = await fetch('https://script.google.com/macros/s/AKfycbxdUz2PNHwL5OhntDF9qH8Io_AvC2MAOadvdEjVRO6pSXNzr88DOkAY7tyFI3L_g-tN/exec', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' // Dodano zaglavlje
+      },
       body: JSON.stringify(formData)
     });
+
+    // Proveri status odgovora
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error('Server error: ' + errorMessage);
+    }
 
     const result = await response.json();
     
