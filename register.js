@@ -22,29 +22,36 @@ document.getElementById('register-form').addEventListener('submit', async functi
   try {
     const response = await fetch('https://script.google.com/macros/s/AKfycbxdUz2PNHwL5OhntDF9qH8Io_AvC2MAOadvdEjVRO6pSXNzr88DOkAY7tyFI3L_g-tN/exec', {
       method: 'POST',
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
     const result = await response.json();
-    
+
     // Hide loader
     loader.style.display = 'none';
 
+    // Display message from the server response
+    message.textContent = result.message;
+
+    // Set message color based on server status
     if (result.status === 'success') {
-      message.textContent = 'Registration successful! Redirecting to activation page...';
       message.style.color = 'green';
 
-      // Redirect to activation page after a short delay
-      // setTimeout(() => {
-       //  window.location.href = '/activation';
-      // }, 2000);
+      // Redirect to activation page after a short delay if registration is successful
+      setTimeout(() => {
+        window.location.href = '/activation';
+      }, 2000);
     } else {
-      // Show detailed error message from backend
-      message.textContent = 'Registration failed: ' + result.message;
-      message.style.color = 'red';
+      message.style.color = 'red';  // Error messages
     }
   } catch (error) {
+    // Hide loader in case of fetch error
     loader.style.display = 'none';
+
+    // Show a generic error message
     message.textContent = 'An error occurred: ' + error.message;
     message.style.color = 'red';
   }
