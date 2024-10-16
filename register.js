@@ -23,7 +23,7 @@ document.getElementById('register-form').addEventListener('submit', async functi
     const response = await fetch('https://script.google.com/macros/s/AKfycbxdUz2PNHwL5OhntDF9qH8Io_AvC2MAOadvdEjVRO6pSXNzr88DOkAY7tyFI3L_g-tN/exec', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' // Dodano zaglavlje
+        'Content-Type': 'application/x-www-form-urlencoded'  // Postavi jednostavan content type kako bi se izbjegao CORS preflight
       },
       body: JSON.stringify(formData)
     });
