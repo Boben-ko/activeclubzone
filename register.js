@@ -35,9 +35,9 @@ document.getElementById('register-form').addEventListener('submit', async functi
       message.style.color = 'green';
 
       // Redirect to activation page after a short delay
-      setTimeout(() => {
-        window.location.href = '/activation';
-      }, 2000);
+      // setTimeout(() => {
+       //  window.location.href = '/activation';
+      // }, 2000);
     } else {
       // Show detailed error message from backend
       message.textContent = 'Registration failed: ' + result.message;
