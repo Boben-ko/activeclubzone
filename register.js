@@ -41,7 +41,7 @@ document.getElementById('register-form').addEventListener('submit', async functi
 
       // Preusmeri nakon 2 sekunde
       setTimeout(() => {
-        window.location.href = '/activeclubzone/register.html';
+        window.location.href = '/activeclubzone/activation.html';
       }, 2000);
     } else {
       // Prikazujemo detaljnu grešku
