@@ -40,9 +40,9 @@ document.getElementById('register-form').addEventListener('submit', async functi
       message.style.color = 'green';
 
       // Preusmeri nakon 2 sekunde
-     // setTimeout(() => {
-     //   window.location.href = '/activation';
-    //////  }, 2000);
+      setTimeout(() => {
+        window.location.href = '/activation';
+      }, 2000);
     } else {
       // Prikazujemo detaljnu grešku
       message.textContent = 'Registration failed: ' + result.message;
