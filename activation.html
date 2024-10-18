@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Activation - Active Club Zone</title>
+    <title>Activate Your Account - Active Club Zone</title>
     <link rel="stylesheet" href="activation.css">
 </head>
 <body>
@@ -15,43 +15,34 @@
             <img src="logo.png" alt="Active Club Zone Logo">
         </div>
     </header>
-<div class="container" id="activation-container">
-    <h2>Activate Your Account</h2>
-    <p>Please enter the activation code sent to your email.</p>
-    
-    <form id="activation-form">
-        <div class="input-container">
-            <input type="text" id="activation-code" placeholder="Enter Activation Code" required>
+
+    <!-- Activation Form -->
+    <section class="activation-form">
+        <div class="form-container">
+            <h2>Activate Your Account</h2>
+            <form id="activation-form">
+                <div class="form-group">
+                    <label for="activation-code">Activation Code</label>
+                    <input type="text" id="activation-code" name="activation-code" placeholder="Enter your activation code" required>
+                </div>
+
+                <button type="submit" class="btn">Activate</button>
+            </form>
+
+            <!-- Loader -->
+            <div class="loader" id="loader" style="display: none;"></div>
+
+            <!-- Success/Error Message -->
+            <p class="success-error-message" id="success-error-message"></p>
         </div>
-        <button type="submit">Activate</button>
-        
-        <!-- Loader -->
-        <div class="loader" id="loader" style="display: none;"></div>
-        
-        <!-- Success/Error Message -->
-        <p class="success-error-message" id="success-error-message"></p>
-    </form>
-    <div id="notification"></div>
-
-    <footer>
-        If you haven't received the email, please check your spam folder.
-    </footer>
-</div>
-
-<!-- Novi sadržaj koji će se prikazati nakon uspješne aktivacije -->
-<div id="success-message-container" style="display: none;">
-    <h2>Activation Successful!</h2>
-    <p id="activation-success-message"></p>
-    <button id="proceed-to-login">Proceed to Login</button>
-</div>
-                
+    </section>
 
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Active Club Zone. All rights reserved.</p>
     </footer>
 
-    <script src="register.js"></script>
+    <script src="activation.js"></script>
 
 </body>
 </html>
