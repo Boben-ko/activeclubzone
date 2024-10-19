@@ -4,76 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Active Club Zone - Home</title>
-    <link rel="stylesheet" href="homepage.css">
+    <title>Active Club Zone</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <img src="logo.png" alt="Active Club Zone Logo">
+    <!-- Main Content Section with two columns -->
+    <section class="main-content">
+        <div class="left-column">
+            <h1>Active Club Zone</h1>
+            <p>Join the ultimate platform for organizing and balancing your recreational sports events.</p>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Features</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Welcome to Active Club Zone</h1>
-            <p>Your go-to platform for club organization, team creation, and event management.</p>
-            <a href="#features" class="btn">Explore Features</a>
-        </div>
-    </section>
+        <div class="right-column">
+            <div class="form-container">
+                <h2>Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="login-email" placeholder="Enter your email" required>
+                    </div>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <h2>Features</h2>
-        <div class="feature-list">
-            <div class="feature">
-                <h3>Club Organization</h3>
-                <p>Manage your club with ease. Set up club name, logo, country, city, and publish club news.</p>
-            </div>
-            <div class="feature">
-                <h3>Team Creation</h3>
-                <p>Invite players to join your team, even unregistered ones via a link. Keep track of members' ratings.</p>
-            </div>
-            <div class="feature">
-                <h3>Event Calendar</h3>
-                <p>Schedule recreational events, set deadlines for sign-ups, and keep everyone in the loop.</p>
-            </div>
-            <div class="feature">
-                <h3>Balanced Team Generation</h3>
-                <p>Automatically create balanced teams based on players' ratings. Choose the number of teams and players per team.</p>
-            </div>
-            <div class="feature">
-                <h3>Personalized Dashboards</h3>
-                <p>Get customized dashboards for Managers, Players, and Manager-Players with essential data at a glance.</p>
-            </div>
-            <div class="feature">
-                <h3>Push Notifications</h3>
-                <p>Stay up to date with important notifications for events, team invites, and updates.</p>
-            </div>
-            <div class="feature">
-                <h3>Polls and Feedback</h3>
-                <p>Managers can create polls to rate players and confirm attendance after each event.</p>
-            </div>
-            <div class="feature">
-                <h3>Google Maps Integration</h3>
-                <p>Easily add event locations with Google Maps integration for a seamless experience.</p>
-            </div>
-            <div class="feature">
-                <h3>Comments and Discussions</h3>
-                <p>Members can leave comments on events and manager posts to facilitate discussions.</p>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="login-password" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn">Login</button>
+                </form>
+
+                <p>Don't have an account? <a href="register.html">Register here</a></p>
             </div>
         </div>
     </section>
@@ -81,8 +41,9 @@
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Active Club Zone. All rights reserved.</p>
-        <p>Partners and Sponsors</p>
     </footer>
+
+    <script src="login.js"></script>
 
 </body>
 </html>
