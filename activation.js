@@ -31,7 +31,7 @@ document.getElementById('activation-form').addEventListener('submit', async func
 
         // Preusmjeravanje na login stranicu
         setTimeout(() => {
-         window.location.href = '/activeclubzone/index.html';
+          window.location.href = '/activeclubzone/index.html';
         }, 2000);
         } else {
             message.textContent = 'Activation failed: ' + result.message;
