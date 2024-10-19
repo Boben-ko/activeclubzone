@@ -17,12 +17,16 @@ document.getElementById('login-form').addEventListener('submit', async function(
 
     try {
         const response = await fetch('https://script.google.com/macros/s/AKfycbxdUz2PNHwL5OhntDF9qH8Io_AvC2MAOadvdEjVRO6pSXNzr88DOkAY7tyFI3L_g-tN/exec', {
+          method: 'POST',
+          body: JSON.stringify(formData)
+        });
+ /*       const response = await fetch('https://script.google.com/macros/s/AKfycbxdUz2PNHwL5OhntDF9qH8Io_AvC2MAOadvdEjVRO6pSXNzr88DOkAY7tyFI3L_g-tN/exec', {
             method: 'POST',
             body: JSON.stringify(formData),
             headers: {
                 'Content-Type': 'application/json'  // Dodaj header da specificiraš JSON format
             }
-        });
+        });*/
 
         // Provjerimo prvo da li vraća response.ok
         if (!response.ok) {
