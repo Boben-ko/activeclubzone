@@ -29,10 +29,10 @@ document.getElementById('activation-form').addEventListener('submit', async func
             message.textContent = 'Account activated successfully! Redirecting to login...';
             message.style.color = 'green';
 
-            // Preusmjeravanje na login stranicu
-            setTimeout(() => {
-                window.location.href = '/login.html';
-            }, 2000);
+        // Preusmjeravanje na login stranicu
+        setTimeout(() => {
+         window.location.href = '/activeclubzone/index.html';
+        }, 2000);
         } else {
             message.textContent = 'Activation failed: ' + result.message;
             message.style.color = 'red';
