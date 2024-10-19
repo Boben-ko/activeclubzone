@@ -3,11 +3,11 @@ document.getElementById('login-form').addEventListener('submit', async function(
 
     // Show loader
     const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'block'; // Provjeri da li postoji loader
+    loader.style.display = 'block';
 
     // Clear previous messages
     const message = document.getElementById('success-error-message');
-    if (message) message.textContent = '';
+    message.textContent = '';
 
     const formData = {
         action: 'login',
@@ -21,22 +21,8 @@ document.getElementById('login-form').addEventListener('submit', async function(
             body: JSON.stringify(formData)
         });
 
-        // Provjerimo prvo da li vraća response.ok
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const resultText = await response.text(); // Dobijamo odgovor kao tekst
-        let result;
-        
-        try {
-            result = JSON.parse(resultText); // Pokušaj parsirati tekst u JSON
-        } catch (parseError) {
-            console.error('Failed to parse JSON:', parseError, resultText);
-            throw new Error('Response is not valid JSON.');
-        }
-
-        if (loader) loader.style.display = 'none'; // Sakrij loader
+        const result = await response.json();
+        loader.style.display = 'none';
 
         if (result.status === 'success') {
             message.textContent = 'Login successful! Redirecting...';
@@ -51,8 +37,8 @@ document.getElementById('login-form').addEventListener('submit', async function(
             message.style.color = 'red';
         }
     } catch (error) {
-        if (loader) loader.style.display = 'none'; // Sakrij loader
-        if (message) message.textContent = 'An error occurred: ' + error.message;
+        loader.style.display = 'none';
+        message.textContent = 'An error occurred: ' + error.message;
         console.log("Fetch error:", error);
     }
 });
