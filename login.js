@@ -14,6 +14,14 @@ document.getElementById('login-form').addEventListener('submit', async function(
       email: document.getElementById('login-email').value,
       password: document.getElementById('login-password').value
     };
+        // Provjera mrežne povezanosti
+    if (!navigator.onLine) {
+        loader.style.display = 'none';
+        message.textContent = 'No internet connection. Please check your connection and try again.';
+        message.style.color = 'red';
+        return;
+    }
+
 
     try {
         const response = await fetch('https://script.google.com/macros/s/AKfycbxdUz2PNHwL5OhntDF9qH8Io_AvC2MAOadvdEjVRO6pSXNzr88DOkAY7tyFI3L_g-tN/exec', {
