@@ -1,18 +1,18 @@
 document.getElementById('login-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    // Show loader
+    // Prikaži loader
     const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'block'; // Provjeri da li postoji loader
+    loader.style.display = 'block';
 
-    // Clear previous messages
+  // Očisti prethodne poruke
     const message = document.getElementById('success-error-message');
-    if (message) message.textContent = '';
+    message.textContent = '';
 
     const formData = {
-        action: 'login',
-        email: document.getElementById('login-email').value,
-        password: document.getElementById('login-password').value
+      action: 'login',
+      email: document.getElementById('login-email').value,
+      password: document.getElementById('login-password').value
     };
 
     try {
@@ -29,37 +29,36 @@ document.getElementById('login-form').addEventListener('submit', async function(
         });*/
 
         // Provjerimo prvo da li vraća response.ok
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+// Dodaj ovu liniju da vidiš sirovi odgovor pre nego ga parsiraš
+    console.log("Raw response:", response);
 
-        const resultText = await response.text(); // Dobijamo odgovor kao tekst
-        let result;
-        
-        try {
-            result = JSON.parse(resultText); // Pokušaj parsirati tekst u JSON
-        } catch (parseError) {
-            console.error('Failed to parse JSON:', parseError, resultText);
-            throw new Error('Response is not valid JSON.');
-        }
+    const result = await response.json();
 
-        if (loader) loader.style.display = 'none'; // Sakrij loader
+    // Ako "result" nije pravilno parsiran, ispisujemo ga
+    console.log("Parsed result:", result);
 
-        if (result.status === 'success') {
-            message.textContent = 'Login successful! Redirecting...';
-            message.style.color = 'green';
+    // Sakrij loader
+    loader.style.display = 'none';
 
-            // Redirect after successful login
-            setTimeout(() => {
-                window.location.href = '/activeclubzone/index.html';
-            }, 2000);
-        } else {
-            message.textContent = 'Login failed: ' + result.message;
-            message.style.color = 'red';
-        }
-    } catch (error) {
-        if (loader) loader.style.display = 'none'; // Sakrij loader
-        if (message) message.textContent = 'An error occurred: ' + error.message;
-        console.log("Fetch error:", error);
+    if (result.status === 'success') {
+      message.textContent = 'Login successful! Redirecting to dashboard page...';
+      message.style.color = 'green';
+
+      // Preusmeri nakon 2 sekunde
+      setTimeout(() => {
+        window.location.href = '/activeclubzone/index.html';
+      }, 2000);
+    } else {
+      // Prikazujemo detaljnu grešku
+      message.textContent = 'Login failed: ' + result.message;
+      message.style.color = 'red';
     }
+  } catch (error) {
+    loader.style.display = 'none';
+    message.textContent = 'An error occurred: ' + error.message;
+    message.style.color = 'red';
+    
+    // Dodaj ovu liniju da vidiš ako postoji greška
+    console.log("Fetch error:", error);
+  }
 });
