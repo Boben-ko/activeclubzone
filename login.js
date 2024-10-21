@@ -44,9 +44,15 @@ document.getElementById('login-form').addEventListener('submit', async function(
             message.textContent = 'Login successful! Redirecting to dashboard page...';
             message.style.color = 'green';
 
-            // Preusmeri nakon 2 sekunde
+        // Preusmjeravanje temeljem userType
             setTimeout(() => {
-                window.location.href = '/activeclubzone/index.html';
+                if (result.userType === 'manager') {
+                    window.location.href = '/activeclubzone/manager_dashboard.html';
+                } else if (result.userType === 'player') {
+                    window.location.href = '/activeclubzone/player_dashboard.html';
+                } else {
+                    window.location.href = '/activeclubzone/default_dashboard.html'; // Zajednički dashboard za ostale tipove
+                }
             }, 2000);
         } else if (result.message === 'Account not activated. Please check your email.') {
             // Prikazujemo poruku i preusmeravamo na aktivaciju nakon 2 sekunde
