@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en" style="max-width:768px; margin: auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+
+    <style>
+        /* Osnovni stilovi */
+        * {
+    box-sizing: border-box;
+}
+:root {
+    --primary-color: #007bbf;
+    --secondary-color: #005f8c;
+    --error-color: #ff4d4d;
+    --success-color: #4CAF50;
+}
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; background-color: #007bbf; color: white; padding: 20px; }
+        main { flex-grow: 1; padding: 20px; padding-bottom: 80px; }
+        footer { display: flex; justify-content: space-around; align-items: center; padding: 10px; background-color: #007bbf; color: white; position: fixed; bottom: 0; height: 50px; width: 768px; max-width: 100%; }
+        .footer-icon { font-size: 2em; cursor: pointer; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        .team-container { display: flex; flex-wrap: wrap; gap: 10px; }
+        .team { border: 1px solid #ddd; padding: 10px; width: 48%; border-radius: 8px; margin-top: 20px; }
+        .Pplayer-card { border: 1px solid #ddd; padding: 10px; border-radius: 8px; display: flex; align-items: center; margin-bottom: 10px; }
+        .Pplayer-info { margin-left: 10px; }
+        .notification { position: fixed; top: 20px; right: 20px; padding: 10px; color: white; border-radius: 5px; }
+        .notification.info { background-color: #8fcbed; }
+        .notification.error { background-color: #ff4d4d; }
+        .notification.success { background-color: #4CAF50; }
+        .flag-dropdown { position: relative; cursor: pointer; }
+        .dropdown-content { display: none; position: absolute; background-color: white; border: 1px solid #ddd; right: 0; top: 30px; width: 100px; z-index: 1; color:#007bbf; }
+        .dropdown-content div { padding: 8px; cursor: pointer; }
+        .dropdown-content div:hover { background-color: #007bbf; color: white; }
+        .player-select-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .download-button { background-color: #007bbf; color: white; padding: 10px 20px; border: none; cursor: pointer; margin-top: 10px; }
+        .download-button:hover { background-color: #005f8c; }
+        input[type="text"] { text-transform: capitalize; }
+    .player-display-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+        gap: 15px;
+    }
+
+    .player-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #f9f9f9;
+        aspect-ratio: 2 / 3.2;
+        position: relative;
+    }
+
+    .player-card img {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+    }
+
+    .player-card .rating {
+        position: absolute;
+        bottom: 8%;
+        right: 2%;
+        background-color: #007bbf;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .player-card .position {
+        position: absolute;
+        bottom: 8%;
+        left: 2%;
+        background-color: #007bbf;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .player-card .player-info {
+        position: absolute;
+        color: gray;
+        bottom:1%;
+}
+.player-item {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.player-item:hover {
+    background-color: #f0f0f0;
+}
+
+.player-item.selected {
+	background-color: #175679;
+    color: white;
+    border-color: #007bbf;
+}
+#loading-indicator {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    padding: 1em;
+}
+
+#publish-dropdown {
+    display: none;
+    position: absolute;
+    bottom: 50px; /* Postavljamo iznad footer ikone */
+    left: 11%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 150px;
+    z-index: 10;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#publish-dropdown div {
+    padding: 10px;
+    cursor: pointer;
+    color: #007bbf;
+}
+
+#publish-dropdown div:hover {
+    background-color: #007bbf;
+    color: white;
+}
+
+    </style>
+</head>
+
+
+
+<body>
+    <header>
+        <h1>Team Manager</h1>
+        <div class="flag-dropdown" onclick="toggleDropdown()">
+            <span class="flag-icon"><i class="fas fa-language"></i> <span id="languageText">Language</span></span>
+            <div class="dropdown-content" id="dropdown-content">
+                <div onclick="setLanguage('bs')">Bosnian</div>
+                <div onclick="setLanguage('en')">English</div>
+                <div onclick="setLanguage('de')">German</div>
+            </div>
+        </div>
+    </header>
+
+    <main id="content">
+        <!-- Dynamic content will load here -->
+    </main>
+
+    <footer>
+<i class="footer-icon fas fa-plus-circle" onclick="publishDropdown(event)"></i>
+    		<div id="publish-dropdown" class="dropdown publish-dropdown"></div>
+<i class="footer-icon fas fa-users" onclick="displayPlayerList()"></i>
+<i class="footer-icon fas fa-cogs" onclick="generateTeamsForm()"></i>
+    </footer>
+
+
+
+// JS
+
+    <script>
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbyXyly2ygoNUfkjLcaGhKz1LW8LaqBWCdjjzEZsD4xEAzzDAIW3jtOuLBRCLiXphpJyYQ/exec';
+
+// JEZIK I PRIJEVODI U JSON formatu
+
+        let selectedLanguage = 'en';
+        const content = document.getElementById("content");
+
+        // Prijevodi u JSON formatu
+        const translations = {
+            en: {
+            language: "Language",
+            addPlayer: "Add New Player",
+            firstName: "First Name",
+            lastName: "Last Name",
+            country: "Country",
+            birth: "Date of Birth",
+            imageUrl: "Image URL",
+            rating: "Rating",
+            position: "Position",
+            goalkeeper: "Goalkeeper",
+            defender: "Defender",
+            midfielder: "Midfielder",
+            forward: "Forward",
+            pleaseFill: "Please fill out all fields.",
+            playerAdded: "Player added successfully!",
+            playerList: "Player List",
+            generateTeams: "Create Balanced Teams",
+            generate: "Generate",
+            selectPlayers: "Select Available Players",
+            selectAll: "Select All",
+            numTeams: "Number of Teams",
+            playersPerTeam: "Players per Team (4-11)",
+            teamNames: "Team Names",
+            successMessage: "Generated Teams",
+   		    player: "Player",
+  		    post: "Post",
+        	event: "Event",
+        	newPostTitle: "New Post",
+        	newPostContent: "Content",
+        	newEventTitle: "New Event",
+        	newEventDate: "Date",
+        	newEventDescription: "Description",
+        	submit: "Submit",
+            title: "Title",
+            },
+            bs: {
+            language: "Jezik",
+            addPlayer: "Dodaj novog igrača",
+            firstName: "Ime",
+            lastName: "Prezime",
+            country: "Država",
+            birth: "Datum Rođenja",
+            imageUrl: "URL Slike",
+            rating: "Ocjena",
+            position: "Pozicija",
+            goalkeeper: "Golman",
+            defender: "Branič",
+            midfielder: "Kreator",
+            forward: "Napadač",
+            pleaseFill: "Molimo popunite sva polja.",
+            playerAdded: "Igrač uspješno dodan!",
+            playerList: "Lista igrača",
+            generateTeams: "Napravi ujednačene timove",
+            generate: "Generiraj",
+            selectPlayers: "Odaberite dostupne igrače",
+            selectAll: "Selektuj sve",
+            numTeams: "Broj timova",
+            playersPerTeam: "Broj igrača po timu (4-11)",
+            teamNames: "Nazivi timova",
+            successMessage: "Generisani timovi",
+            player: "Igrač",
+        	post: "Post",
+        	event: "Događaj",
+        	newPostTitle: "Novi Post",
+        	newPostContent: "Sadržaj",
+        	newEventTitle: "Novi Događaj",
+        	newEventDate: "Datum",
+        	newEventDescription: "Opis",
+        	submit: "Objavi",
+            title: "Naslov",
+            },
+            de: {
+            language: "Sprache",
+            addPlayer: "Neuen Spieler hinzufügen",
+            firstName: "Vorname",
+            lastName: "Nachname",
+            country: "Staat",
+            birth: "Geburtsdatum",
+            imageUrl: "Bild-URL",
+            rating: "Bewertung",
+            position: "Position",
+            goalkeeper: "Torwart",
+            defender: "Verteidiger",
+            midfielder: "Mittelfeldspieler",
+            forward: "Stürmer",
+            pleaseFill: "Bitte füllen Sie alle Felder aus.",
+            playerAdded: "Spieler erfolgreich hinzugefügt!",
+            playerList: "Spielerliste",
+            generateTeams: "Erstellen Sie ausgewogene Teams",
+            generate: "Erstellen",
+            selectPlayers: "Verfügbare Spieler auswählen",
+            selectAll: "Alle auswählen",
+            numTeams: "Anzahl der Teams",
+            playersPerTeam: "Spieler pro Team (4-11)",
+            teamNames: "Teamnamen",
+            successMessage: "Erstellte Teams",
+            player: "Spieler",
+        	post: "Beitrag",
+        	event: "Ereignis",
+        	newPostTitle: "Neuer Beitrag",
+        	newPostContent: "Inhalt",
+        	newEventTitle: "Neues Ereignis",
+        	newEventDate: "Datum",
+        	newEventDescription: "Beschreibung",
+        	submit: "Einreichen",
+            title: "Titel",
+            }
+        };
+		let currentSection = 'players'; // Početna sekcija
+
+		function scrollToTop() {
+		    window.scrollTo({ top: 0});
+		}
+
+        // Funkcija za promjenu jezika
+		function setLanguage(lang) {
+    		selectedLanguage = lang;
+    		document.getElementById("languageText").innerText = translations[lang].language;
+
+    		// Ponovno učitaj trenutnu sekciju
+    		switch (currentSection) {
+        		case 'players':
+            		displayPlayerList();
+            		break;
+        		case 'addPlayer':
+            		addPlayerForm();
+            		break;
+        		case 'newPost':
+            		newPostForm();
+            		break;
+        		case 'newEvent':
+            		newEventForm();
+            		break;
+        		case 'generateTeams':
+            		generateTeamsForm();
+            		break;
+        		default:
+            		displayPlayerList(); // Fallback na default
+    		}
+		}
+
+	function translate(key) {
+    	return translations[selectedLanguage][key] || translations['en'][key] || key;
+	}
+
+
+// HEADER
+
+		let dropdownListenerAdded = false;
+	function toggleDropdown() {
+    	const dropdown = document.getElementById("dropdown-content");
+    	dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+	}
+
+	document.addEventListener("click", (event) => {
+    	const dropdown = document.getElementById("dropdown-content");
+    	if (dropdown.style.display === 'block' && !event.target.closest('.flag-dropdown')) {
+        	dropdown.style.display = 'none';
+    	}
+	});
+
+
+
+
+// NOTIFIKACIJE
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement("div");
+            notification.className = `notification ${type}`;
+            notification.innerText = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 1500);
+        }
+
+
+
+// PUBLISH DROPDOWN
+
+function publishDropdown(event) {
+    event.stopPropagation(); // Spriječi klik da se propagira na parent elemente
+    const dropdown = document.getElementById('publish-dropdown');
+    populatePublishDropdown();
+
+    // Ako je trenutno zatvoren, otvori dropdown
+    if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+        dropdown.style.display = 'block';
+
+        // Dodaj listener za klik izvan dropdown-a
+        document.addEventListener('click', function handleClickOutside(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+                document.removeEventListener('click', handleClickOutside); // Ukloni listener
+            }
+        });
+
+        // Dodaj listener za zatvaranje na klik unutar dropdown-a
+        dropdown.addEventListener('click', function handleItemClick() {
+            dropdown.style.display = 'none';
+            dropdown.removeEventListener('click', handleItemClick); // Ukloni listener nakon klika
+        });
+    } else {
+        // Zatvori dropdown ako je već otvoren
+        dropdown.style.display = 'none';
+    }
+}
+
+
+function populatePublishDropdown() {
+    const dropdown = document.getElementById('publish-dropdown');
+    dropdown.innerHTML = `
+        <div onclick="addPlayerForm()">${translations[selectedLanguage].player}</div>
+        <div onclick="newPostForm()">${translations[selectedLanguage].post}</div>
+        <div onclick="newEventForm()">${translations[selectedLanguage].event}</div>
+    `;
+}
+
+// NOVI POST
+
+	function newPostForm() {
+    	scrollToTop(); // Resetuj skrol na vrh
+        currentSection = 'newPost';
+        content.innerHTML = `
+            <h2>${translations[selectedLanguage].newPostTitle}</h2>
+            <form>
+                <div class="form-group">
+                    <label for="post-title">${translations[selectedLanguage].title}:</label>
+                    <input type="text" id="post-title">
+                </div>
+                <div class="form-group">
+                    <label for="post-content">${translations[selectedLanguage].newPostContent}:</label>
+                    <textarea id="post-content" rows="5"></textarea>
+                </div>
+                <button type="button" class="download-button" onclick="submitPost()">${translations[selectedLanguage].submit}</button>
+            </form>
+    	`;
+	}
+
+	function submitPost() {
+    	const title = document.getElementById('post-title').value;
+    	const content = document.getElementById('post-content').value;
+    	console.log("Post objavljen:", { title, content });
+    	displayNotification('success', 'Post uspješno objavljen!');
+	}
+
+
+// NOVI DOGAĐAJ
+
+	function newEventForm() {
+    	scrollToTop(); // Resetuj skrol na vrh
+        currentSection = 'newEvent';
+    	content.innerHTML = `
+            <h2>${translations[selectedLanguage].newEventTitle}</h2>
+            <form>
+                <div class="form-group">
+                    <label for="event-title">${translations[selectedLanguage].title}:</label>
+                    <input type="text" id="event-title">
+                </div>
+                <div class="form-group">
+                    <label for="event-date">${translations[selectedLanguage].newEventDate}:</label>
+                    <input type="date" id="event-date">
+                </div>
+                <div class="form-group">
+                    <label for="event-description">${translations[selectedLanguage].newEventDescription}:</label>
+                    <textarea id="event-description" rows="5"></textarea>
+                </div>
+                <button type="button" class="download-button" onclick="submitEvent()">${translations[selectedLanguage].submit}</button>
+            </form>
+    	`;
+	}
+
+	function submitEvent() {
+    	const title = document.getElementById('event-title').value;
+    	const date = document.getElementById('event-date').value;
+    	const description = document.getElementById('event-description').value;
+    	console.log("Događaj objavljen:", { title, date, description });
+    	displayNotification('success', 'Događaj uspješno objavljen!');
+	}
+
+
+// NOVI IGRAČ
+
+    function addPlayerForm() {
+    	scrollToTop(); // Resetuj skrol na vrh
+        currentSection = 'addPlayer';
+        content.innerHTML = `
+            <h2>${translations[selectedLanguage].addPlayer}</h2>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].firstName}</label>
+                <input type="text" id="firstName" required>
+            </div>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].lastName}</label>
+                <input type="text" id="lastName" required>
+            </div>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].country}</label>
+                <input type="text" id="country">
+            </div>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].birth}</label>
+                <input type="date" id="birth" value="2000-01-01">
+            </div>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].imageUrl}</label>
+                <input type="url" id="imageUrl">
+            </div>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].position}</label>
+                <select id="playerPosition">
+                    ${['goalkeeper', 'defender', 'midfielder', 'forward']
+                        .map(position => `<option value="${position}">${translations[selectedLanguage][position]}</option>`)
+                        .join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>${translations[selectedLanguage].rating}</label>
+                <input type="number" id="playerRating" min="40" max="100" required>
+            </div>
+            <button class="download-button" onclick="addPlayer()">${translations[selectedLanguage].addPlayer}</button>
+        `;
+    }
+
+async function addPlayer() {
+    scrollToTop(); // Resetuj skrol na vrh
+    showLoadingIndicator(true); // Prikaži indikator učitavanja
+
+    const firstName = capitalizeFirstLetter(document.getElementById("firstName").value);
+    const lastName = capitalizeFirstLetter(document.getElementById("lastName").value);
+    const country = capitalizeFirstLetter(document.getElementById("country").value);
+    const birth = document.getElementById("birth").value;
+    const imageUrl = document.getElementById("imageUrl").value;
+    const playerRating = document.getElementById("playerRating").value;
+    const playerPosition = document.getElementById("playerPosition").value;
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
+    if (!firstName || !lastName || !playerRating || !playerPosition) {
+        showNotification(translations[selectedLanguage].pleaseFill, 'error');
+        await delay(1000);
+        showLoadingIndicator(false); // Sakrij indikator učitavanja
+
+        return;
+    }
+
+    // Mapa pozicija na engleski jezik
+    const positionMap = {
+        goalkeeper: "goalkeeper",
+        defender: "defender",
+        midfielder: "midfielder",
+        forward: "forward",
+        golman: "goalkeeper",
+        branič: "defender",
+        kreator: "midfielder",
+        napadač: "forward",
+        torwart: "goalkeeper",
+        verteidiger: "defender",
+        mittelfeldspieler: "midfielder",
+        stürmer: "forward"
+    };
+
+    // Pretvori poziciju u engleski
+    const positionInEnglish = positionMap[playerPosition.toLowerCase()];
+
+    await fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'addPlayer',
+            firstName,
+            lastName,
+            country,
+            birth,
+            imageUrl,
+            rating: playerRating,
+            position: positionInEnglish
+        })
+    });
+
+    // Dodavanje u lokalnu memoriju pomoću nove funkcije
+    savePlayerToLocalStorage({
+        firstName,
+        lastName,
+        country,
+        birth,
+        imageUrl,
+        rating: playerRating,
+        position: positionInEnglish
+    });
+
+    
+    showNotification(translations[selectedLanguage].playerAdded, 'success');
+    displayPlayerList(); // Prikaži listu igrača
+    showLoadingIndicator(false); // Sakrij indikator učitavanja
+
+}
+
+function savePlayerToLocalStorage(newPlayer) {
+    // Dohvati postojeće igrače iz lokalne memorije
+    let players = JSON.parse(sessionStorage.getItem("players")) || [];
+    
+    // Parsiraj novog igrača prema standardnom formatu
+    const formattedPlayer = {
+        name: `${newPlayer.firstName} ${newPlayer.lastName}`,
+        country: newPlayer.country || "Unknown",
+        birth: newPlayer.birth || null,
+        imageUrl: newPlayer.imageUrl || "https://via.placeholder.com/150",
+        rating: parseFloat(newPlayer.rating) || 0,
+        position: newPlayer.position || "unknown"
+    };
+    
+    // Dodaj novog igrača u listu
+    players.push(formattedPlayer);
+
+    // Spremi ažuriranu listu u lokalnu memoriju
+    sessionStorage.setItem("players", JSON.stringify(players));
+}
+
+
+// PLAYER LIST
+
+		function displayPlayerList() {
+            scrollToTop(); // Resetuj skrol na vrh
+    		currentSection = 'players'; // Postavi trenutnu sekciju
+    		content.innerHTML = `<h2>${translations[selectedLanguage].playerList}</h2><div id="playerList" 	class="player-display-list"></div>`;
+    		loadPlayers();
+		}
+
+function showLoadingIndicator(show = true) {
+    const loadingIndicator = document.getElementById("loading-indicator");
+    if (loadingIndicator) {
+        loadingIndicator.style.display = show ? "block" : "none";
+    }
+}
+
+async function loadPlayers() {
+    showLoadingIndicator(true); // Prikaži indikator učitavanja
+    try {
+        let players = JSON.parse(sessionStorage.getItem("players"));
+        if (!players) {
+            const response = await fetch(scriptUrl + '?action=getPlayers');
+            players = await response.json();
+            sessionStorage.setItem("players", JSON.stringify(players));
+        }
+        renderPlayerList(players); // Renderiraj listu igrača za pregled
+        return players; // Vrati podatke o igračima
+    } catch (error) {
+        console.error("Error loading players:", error);
+        showNotification("Failed to load players. Please try again later.", "error");
+        return []; // Vrati prazan niz u slučaju greške
+    } finally {
+        showLoadingIndicator(false); // Sakrij indikator učitavanja
+    }
+}
+
+
+
+function renderPlayerList(players) {
+    const playerListContainer = document.getElementById("playerList");
+    if (!players || players.length === 0) {
+        playerListContainer.innerHTML = `<p>${translations[selectedLanguage].noPlayers || "No players available"}</p>`;
+        return;
+    }
+
+
+    playerListContainer.innerHTML = players.map(player => createPlayerCard(player)).join('');
+}
+
+
+function createPlayerCard(player) {
+    const birthDate = player.birth ? new Date(player.birth) : null;
+        const age = birthDate ? new Date().getFullYear() - birthDate.getFullYear() - (new Date() < new Date(birthDate.setFullYear(new Date().getFullYear())) ? 1 : 0) : "Unknown";
+        const shortName = `${player.name.charAt(0)}. ${player.name.split(' ')[1] || ''}`.trim();
+
+    return `
+        <div class="player-card">
+            <img src="${player.imageUrl || 'https://via.placeholder.com/150'}" alt="${shortName}">
+            <div class="position">${translations[selectedLanguage][player.position] || player.position}</div>
+            <div class="rating">${player.rating}</div>
+            <div class="player-info">
+                ${shortName}, ${age}
+            </div>
+        </div>
+    `;
+}
+
+
+
+// GENERIRANJE TIMOVA
+
+async function loadSelectionList() {
+    scrollToTop(); // Resetuj skrol na vrh
+    showLoadingIndicator(true);
+    try {
+        let players = JSON.parse(sessionStorage.getItem("players"));
+        if (!players || players.length === 0) {
+            const response = await fetch(scriptUrl + '?action=getPlayers');
+            if (!response.ok) throw new Error('Failed to fetch players');
+            players = await response.json();
+            sessionStorage.setItem("players", JSON.stringify(players));
+        }
+        return players; // Vraća listu igrača
+    } catch (error) {
+        console.error("Error loading players:", error);
+        showNotification("Failed to load players. Please try again later.", "error");
+        return []; // Vraća prazan niz u slučaju greške
+    } finally {
+        showLoadingIndicator(false);
+    }
+}
+
+
+// Funkcija za prikaz forme za generisanje timova
+async function generateTeamsForm() {
+    scrollToTop(); // Resetuj skrol na vrh
+    currentSection = 'generateTeams';
+    const players = await loadSelectionList(); // Dohvati igrače
+    content.innerHTML = `
+        <h2>${translations[selectedLanguage].generateTeams}</h2>
+        <div class="form-group">
+            <label>${translations[selectedLanguage].playersPerTeam}</label>
+            <input type="number" id="playersPerTeam" min="4" max="11" value="4" required>
+        </div>
+        <div class="form-group">
+            <label>${translations[selectedLanguage].numTeams}</label>
+            <input type="number" id="numTeams" min="2" onchange="updateTeamNameInputs()" value="2" required>
+        </div>
+        <div id="teamNameInputs" class="form-group"></div>
+        <div class="form-group">
+            <label></label>
+            <div id="availablePlayers" class="player-select-list"></div>
+        </div>
+
+        <button type="button" class="download-button"onclick="generateTeams()">${translations[selectedLanguage].generate}</button>
+    `;
+    updateTeamNameInputs();
+    populatePlayerList(players); // Prikaz liste igrača za selekciju
+    highlightSelectedPlayers();
+}
+
+
+// Funkcija za filtriranje, sortiranje i prikaz liste igrača
+function populatePlayerList(players) {
+    const playerList = document.getElementById("availablePlayers");
+    if (!players || players.length === 0) {
+        playerList.innerHTML = `<p>${translations[selectedLanguage].noPlayers || "No players available"}</p>`;
+        return;
+    }
+
+    const positions = ['goalkeeper', 'defender', 'midfielder', 'forward'];
+    let htmlContent = "";
+
+    positions.forEach(position => {
+        const filteredPlayers = players
+            .filter(player => player.position === position)
+            .sort((a, b) => b.rating - a.rating);
+
+        if (filteredPlayers.length > 0) {
+            htmlContent += `
+                <div class="player-group">
+                    <h3>${translations[selectedLanguage][position] || position}</h3>
+                    ${filteredPlayers.map(player => {
+                        const shortName = `${player.name.charAt(0)}. ${player.name.split(' ')[1] || ''}`.trim();
+                        return `
+                            <div class="player-item" id="player-${player.name.replace(/\s+/g, '-')}" onclick="togglePlayerSelection('${player.name}')">
+                                ${shortName} - ${player.rating}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+    });
+
+    playerList.innerHTML = htmlContent;
+    highlightSelectedPlayers();
+}
+
+
+
+// Praćenje selekcije igrača
+let selectedPlayers = [];
+
+function togglePlayerSelection(playerName) {
+    const playerElement = document.getElementById(`player-${playerName.replace(/\s+/g, '-')}`);
+    if (selectedPlayers.includes(playerName)) {
+        selectedPlayers = selectedPlayers.filter(name => name !== playerName);
+        playerElement.classList.remove('selected');
+    } else {
+        selectedPlayers.push(playerName);
+        playerElement.classList.add('selected');
+    }
+    updatePlayerCounter();
+}
+
+// Vizuelni prikaz selektovanih igrača
+function highlightSelectedPlayers() {
+    const playerItems = document.querySelectorAll(".player-item");
+    playerItems.forEach(item => {
+        // Ekstraktujte ime igrača iz id atributa
+        const playerName = item.id.replace('player-', '').replace(/-/g, ' '); // Pretvara nazad iz id formata u ime
+        const isSelected = selectedPlayers.includes(playerName);
+        item.classList.toggle('selected', isSelected);
+    });
+}
+
+
+
+// Dinamično ažuriranje imena timova
+function updateTeamNameInputs() {
+    const numTeams = parseInt(document.getElementById('numTeams')?.value || 0);
+    const teamNameInputs = document.getElementById("teamNameInputs");
+    teamNameInputs.innerHTML = `
+        <label>${translations[selectedLanguage].teamNames}</label>
+    `;
+    for (let i = 1; i <= numTeams; i++) {
+        teamNameInputs.innerHTML += `
+            <div class="form-group">
+                <input type="text" id="teamName${i}" placeholder="Team ${i}">
+            </div>
+        `;
+    }
+}
+
+
+function updatePlayerCounter() {
+    const totalPlayers = selectedPlayers.length;
+
+    const playersPerTeam = parseInt(document.getElementById("playersPerTeam")?.value || 0);
+    const numTeams = parseInt(document.getElementById("numTeams")?.value || 0);
+    const requiredPlayers = playersPerTeam * numTeams;
+
+    if (totalPlayers < requiredPlayers) {
+        showNotification(`Selected players: ${totalPlayers}. More players needed: ${requiredPlayers - totalPlayers}.`, "error");
+    } else {
+        showNotification(`Selected players: ${totalPlayers}. Ready to generate teams!`, "success");
+    }
+}
+
+
+
+function validateInputs() {
+    const numTeams = parseInt(document.getElementById("numTeams").value);
+    const playersPerTeam = parseInt(document.getElementById("playersPerTeam").value);
+
+    if (isNaN(numTeams) || isNaN(playersPerTeam)) {
+        showNotification("Please enter valid numbers for teams and players per team.", "error");
+        return false;
+    }
+
+    if (numTeams < 2 || playersPerTeam < 4) {
+        showNotification("Number of teams must be at least 2 and players per team at least 4.", "error");
+        return false;
+    }
+
+    if (selectedPlayers.length < numTeams * playersPerTeam) {
+        showNotification("Not enough players selected to form the teams.", "error");
+        return false;
+    }
+
+    return true;
+}
+
+
+// Algoritam za generisanje balansiranih timova
+// Utility function to pause execution
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+} 
+
+function calculateAverageRating(players) {
+    if (!players || players.length === 0) return 0;
+
+    const totalRating = players.reduce((sum, player) => sum + player.rating, 0);
+    return totalRating / players.length;
+}
+
+// Globalna Varijabla za Redoslijed Timova
+let currentTeamOrder = [];
+
+function sortTeamsByAverageRating(teams) {
+    const sortedTeams = teams.sort((a, b) => a.rating - b.rating);
+    currentTeamOrder = sortedTeams; // Ažuriraj globalnu varijablu
+    return sortedTeams;
+}
+
+// Glavna funkcija za generisanje timova
+async function generateTeams() {
+    showNotification("Starting team generation process...", "info");
+    await delay(2000);
+
+    const numTeams = parseInt(document.getElementById("numTeams").value);
+    const playersPerTeam = parseInt(document.getElementById("playersPerTeam").value);
+    const allPlayers = await loadSelectionList();
+
+    if (!validateInputs()) {
+        showNotification("Invalid inputs provided. Please check and try again.", "error");
+        return;
+    }
+
+    const selectedPlayerDetails = allPlayers.filter(player => selectedPlayers.includes(player.name));
+
+    if (selectedPlayerDetails.length < numTeams * playersPerTeam) {
+        showNotification("Not enough valid players selected.", "error");
+        return;
+    }
+
+    // Kreiranje stvarnih imena timova
+    const teamNames = Array.from({ length: numTeams }, (_, index) => {
+        const input = document.getElementById(`teamName${index + 1}`);
+        return input?.value?.trim() || `Team ${index + 1}`;
+    });
+
+    // Grupisanje igrača prema pozicijama
+    const positions = ["goalkeeper", "defender", "midfielder", "forward"];
+    const playersByPosition = positions.reduce((acc, pos) => {
+        acc[pos] = selectedPlayerDetails
+            .filter(player => player.position === pos)
+            .sort((a, b) => b.rating - a.rating);
+        return acc;
+    }, {});
+
+    // Kreiranje praznih timova
+    const teams = Array.from({ length: numTeams }, (_, index) => ({
+        name: teamNames[index], // Dodaj naziv tima
+        players: [],
+        rating: 0
+    }));
+
+    // Raspodjela igrača kroz prvi krug
+    showNotification("Distributing players in the first round...", "info");
+    for (const position of positions) {
+        sortTeamsByAverageRating(teams); // Ažuriraj redoslijed prije distribucije
+        await distributePlayersByPositionStrict(teams, playersByPosition[position], position, numTeams);
+    }
+
+    // Provjera i prikaz timova nakon prvog kruga
+    if (validateFinalTeamSizes(teams, playersPerTeam)) {
+        await delay(600);
+        showNotification("First round completed successfully!", "success");
+        await delay(1600);
+        displayTeams(teams); // Prikazuje samo glavne igrače
+    } else {
+        showNotification("Error: Invalid team sizes after the first round!", "error");
+        throw new Error("Team generation failed after the first round.");
+    }
+}
+
+// Funkcija za raspodjelu igrača iz određene pozicije
+async function distributePlayersByPositionStrict(teams, positionPlayers, position, numTeams) {
+    if (positionPlayers.length < numTeams) {
+        showNotification(`Not enough players available for position: ${position}`, "error");
+        throw new Error(`Insufficient players for position: ${position}`);
+    }
+
+    for (let i = 0; i < numTeams; i++) {
+        const bestPlayer = positionPlayers.shift(); // Preuzmi najboljeg igrača s pozicije
+        const shortName = `${bestPlayer.name.charAt(0)}. ${bestPlayer.name.split(' ')[1] || ''}`.trim();
+
+        teams[i].players.push(bestPlayer);
+        teams[i].rating = calculateAverageRating(teams[i].players);
+
+        const teamName = currentTeamOrder[i]?.name || `Team ${i + 1}`; // Koristi trenutni redoslijed timova
+        showNotification(`Assigned ${position} ${shortName} to ${teamName}.`, "info");
+        await delay(1000);
+    }
+}
+
+
+// Provjera finalnih veličina timova
+function validateFinalTeamSizes(teams, playersPerTeam) {
+    return teams.every(team => team.players.length === playersPerTeam);
+}
+
+// Funkcija za prikaz timova (glavni igrači)
+function displayTeams(teams) {
+    scrollToTop(); // Resetuj skrol na vrh
+
+    // Provjera praznih timova
+    if (!teams || teams.length === 0) {
+        content.innerHTML = `<h2>${translations[selectedLanguage].noTeamsGenerated || "No teams generated"}</h2>`;
+        return;
+    }
+
+    // Generisanje validnih imena timova
+    const teamNames = teams.map((_, index) => {
+        const input = document.getElementById(`teamName${index + 1}`);
+        return input?.value?.trim() || `Team ${index + 1}`;
+    });
+
+    // Dinamički sadržaj timova
+    content.innerHTML = `
+        <h2>${translations[selectedLanguage].successMessage || "Teams Generated Successfully"}</h2>
+        <div class="team-container"></div>
+    `;
+
+    const teamContainer = document.querySelector(".team-container");
+    teamContainer.innerHTML = teams.map((team, index) => `
+        <div class="team">
+            <h3>${teamNames[index]}</h3>
+            <div class="team-players">
+                <h4>${translations[selectedLanguage].mainPlayers || "Main Players"}</h4>
+                            <!-- Prikaz prosječne ocjene tima -->
+                <h4>${translations[selectedLanguage].averageRating || "Average Rating"}: ${team.rating.toFixed(2)}</h4>
+                ${team.players.map(player => {
+				    const shortName = `${player.name.charAt(0)}. ${player.name.split(' ')[1] || ''}`.trim(); // Kreiraj shortName
+				    return `
+				        <div class="player-card">
+				            <p><strong>${shortName}</strong></p> <!-- Prikazuje shortName -->
+				            <p>${translations[selectedLanguage].rating || "Rating"}: ${player.rating}</p>
+				            <p>${translations[selectedLanguage][player.position] || player.position}</p>
+				        </div>
+				    `;
+				}).join('')}
+            </div>
+
+        </div>
+    `).join('');
+
+
+
+    content.innerHTML += `
+        <button class="download-button" onclick="downloadTeamsAsImage()">
+            ${translations[selectedLanguage].downloadTeams || "Download Teams"}
+        </button>
+    `;
+}
+
+// Ostale pomoćne funkcije (validateInputs, loadSelectionList, calculateAverageRating itd.) ostaju nepromijenjene.
+
+
+
+
+
+
+// Preuzimanje timova kao slika
+function downloadTeamsAsImage() {
+    html2canvas(document.querySelector(".team-container")).then(canvas => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "teams.png";
+        link.click();
+    });
+}
+
+// Prikaži indikator učitavanja na stranici
+document.body.insertAdjacentHTML('beforeend', `
+    <div id="loading-indicator">
+        <p>Loading...</p>
+    </div>
+`); 
+
+        // Inicializacija s početnim jezikom i prikazom
+        function renderContent() {
+            document.getElementById("languageText").innerText = translations[selectedLanguage].language;
+            displayPlayerList(); // početna stranica prikazuje listu igrača
+        }
+
+        // Load početni sadržaj
+        renderContent();
+    </script>
+
+    <!-- Učitaj biblioteku za preuzimanje kao sliku -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
